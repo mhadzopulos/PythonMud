@@ -1,0 +1,10 @@
+Update 6/24/2012 11:57
+
+-Made the game able to switch skills, now you can use both rockblast and spire in game
+-In addition, made a Icon HUD to select skills (similar to half-life)
+
+Update 6/25/2012 19:59PM
+
+-Made the enemy follow the player and use skills
+-Made the HUD for the players hp
+-Made the parry skill

@@ -1,0 +1,352 @@
+Also posted on the Forums
+------------------
+2/1/12 - 3:30pm - Sexy Man
+-----------------
+-Renamed chat_demo.py to game.py to save on terminal running aggravation
+-Fixed the description information not being inserted into the Database Tables (forgot to add a commit() in there) 
+-Restructured the Master_User Table
+--Added ID Back in with autoincrement data type
+--Uploaded and updated version of DBCreation.py 
+--You will need to deleted the old Game.db and recreated it with the new DBCreation.py
+-Restructured Character_Stats Table
+--Added ID back in with integer data type (Which it retrieves from Master_User's ID value), and added in deleted with integer type
+-Reordered the createchar ids to remove the 1 to 1.5 to 2, back to 1 to 2
+-Started adding in checks under user creation using Try on int(msg) 
+--Did all but the Hair Color and Skin Color, since more need to be thought up and added first, did not have the time to do so
+The Current program ran and worked on my end as of this upload
+
+5:26
+-changed game.py 
+--login function was fucked up with the NULL put for the ID, To make login function smooth, just made it '""""""'
+-Fixed the problem with the infinite char creation (client.logged in was forgotten in character creation and a check in process_clients was added)
+
+EVERYTHING WORKS!
+so what next?
+
+wanna start creating a location to load the character into?
+
+--------------
+10:18pm - Sexy Man
+--------------
+-Readded the Null back in
+-Moved the CreateChar() Class to Defs.py
+-Added include for Defs.py
+-Changed DBCreation.py
+--can choose to create game.db or World.db (World.db includes 5 BS Entries for testing)
+
+--------------
+2/2/12 - 6:40pm - Sexy Man
+--------------
+-Added Location Class into Defs.py
+--Uploaded Test.py, so you can try it out if you'd like
+-Added Stat Upgrade option in Create a Character
+--All seems to work right as I Can tell, set it to 5 Points for now, easily changed
+-Change the Structure of the Character_Stats Table
+--Added Skill_Points (For Stats) and Move_Points (Place holder for Move Point upgrades if they come up)
+
+11:54
+
+-changed game.py
+--created a world loader, and when log in, displays the first world
+-changed telnet.py, added client.location attrib
+
+--------------
+2/3/12 - 9:20pm - Sexy Man
+--------------
+-Added Character Class
+--Currently just includes __init__ and save
+--Included Test2.py so you can try it out if you like
+-Added a client.character in Telnet.py to save the character class to
+
+9:30pm
+-Changed the game.py
+--added in displays exits
+--added in moving locations
+--neither are working
+
+--------------
+2/4/12 - 10:40pm - Sexy Man
+--------------
+-Update DBCreation.py
+--Altered the World Maker
+--Added Mob Maker
+--YOU WILL NEED TO DELETE AND REMAKE YOUR World.DB
+-Started a Mob Class in Defs.py
+
+--------------
+2/9/12 - 11:50pm - Sexy Man
+--------------
+-Update DBCreation.py (To reflect the changes to the Databases, which can be seen on the Forums (Will most likely be changed again)
+--YOU WILL NEED TO REMAKE YOUR World.db and Mob.db Tables
+-Updated Defs.py
+--Changed Location and Mob Classes to reflect DB Changes
+-Updated Game.py
+--Changed the world loading to reflect the changes
+--Also added the new line after dirrection listing, since it only goes to a new line if theres an east dirrection
+--Also added a new line before displaying the new Area just for testing organization purposes
+
+2/13/12 7:00pm
+-Fixed Mob Class
+--Fix the DB Name
+--Changed ID to Mob_ID
+-Started Mob Loading Code
+
+--------------
+2/13/12 - 8:55pm - Sexy Man
+--------------
+-Moved the Mob Loading Code inside the World Loading
+--So it now gets the Mobs and saves it to Location.MOB_LIST before it appends it to the World
+--It works, so I'm happy with it, feel free to update it if you feel the need to
+-Started loading the mobs and displaying them in the World
+--For now you just see "You See <Mob> Standing here", will update that later with more information
+--Once again, feel free to update it
+
+--------------
+2/14/12 - 10:00pm - Sexy Man
+--------------
+-Some Minor Updates in defs.py
+--Started an Object Class
+--Started working on Inventory under the Character Class
+
+--------------
+2/15/12 - 5:28pm - Other Guy
+--------------
+-Some Minor Updates in game.py
+--just formatted the display to be easily read
+-- added in a timer, gotta figure out how to do the heart beat for the server
+---the timer doesn't really do anything
+-input handler method added
+
+--------------
+2/16/12 - 9:28pm - Other Guy
+--------------
+-Some Minor Updates in game.py
+-- added a display so that way clients are now displayed to the client (even himself - for testing purposes)
+---changed some stuff in the movement to append and remove clients from the location
+-update to defs.py
+--CLIENT_LIST and OBJECT_LIST were added
+
+--------------
+2/16/12 - 9:45pm - Sexy Man
+--------------
+-Add Objects to DBCreation.py
+
+--------------
+2/22/2012 Afternoonish - Other Guy
+--------------
+-Additions with Objs in game.py
+--Locations can now load objects
+--Locations now display objects loaded
+--Game now loads characters inventory
+--Inventory (inv, inventory) function added to display inventory
+
+------------------------
+2/22/2012 NIGHT - Other Guy
+________________________
+
+fixed the inventory function (with Sexy Man)
+formatted the text a little for easier read
+
+--------------
+2/22/2012 - 9:40pm - Sexy Man
+--------------
+-Added in a split for input
+
+--------------
+2/23/2012 - 8:00pm - Sexy Man
+--------------
+-Added in Dance Input
+--It works as is, but probably could use some cleaning
+-Converted input to lower for typing compatibility. 
+
+_______________
+2/24/2012 3:25pm
+_______________
+Major updates
+
+game.py
+-added in some more commands (self, equip, attack)
+-added in a heart beat for the server/client
+--if you attack someone, it auto attacks them
+--server time has been set up so we can start doing stuff with that
+
+added in a RepeatTimer.py for the heart beat
+thats as the same folder as game.py
+
+def.py
+-changed variable names/ added some for character and mob
+
+telnet.py
+-added in a client.Time variable for the heartbeat
+
+async.py
+-added in a server.Time variable for the heartbeat
+
+--------------
+2/24/2012 - 6:20pm - Sexy Man
+--------------
+-Added Aliases into the Functions
+--Equip and Att Functions now go by the Alias list, so you can do "att Hobo" (For Attack Random Hobo) or "equip limb" (For Equiping the Hobo Limb Weapon, so long as its in the Alias List.
+-Fixed a Typo on line 615
+-Changed the Weapon Bonus Damage in Attack from Other_Type to Value, I know its a little confusing, Other_Type was designed for the Bitvectors, Value is the Bonus it gives, Cost is the price. I should have worded it better. 
+
+11:00 pm continued
+
+-Added in the send_cc code to send
+--Can now use carrot codes
+-Display world is only called when needed
+--I made it so unless you go to a new location or use the new look funciton, it wont keep re-displaying the world. kept getting in the way when I was playing with it. 
+--Done by adding in client.display, if set to 1 the world displays, else it doesn't
+--Brought up some minor formatting errors no big deal, I fixed some of those too.
+-I didn't get around to it, but the attack function under defs, the Weapon is treated as an object, but not of the Object class, its kind of wierd, but it doesn't take of any of the Objects Class attributes. 
+-Added in a smooch action 
+
+
+--------------------
+2/27/2012 - Afternoon - Other Guy
+--------------------
+game.py
+-implemented save function into the client.chat (remembers your equipment now)
+-added functions "drop", "take", "use", "remove"
+defs.py
+-fixed the save function
+-added a remove method for removing equipment
+-added an armor in my sql
+-added in AC to the equip method
+
+**NOTE** need to fix the save function to remember inventory
+**NOTE** check your MOBS.db, the column "Inventory" is spelled "Intentory" (I fixed mine with sqliteman)
+**NOTE** need to break out of the for loops for our searches. Right now it keeps going even if you find the thing youre looking for
+So if you have two medkits, it uses both of them
+
+--------------
+2/27/2012 - 10:00pm - Sexy Man
+--------------
+Defs.py
+-Added in Inventory Part for Character.Save
+Game.py
+-Added in a save function (Seems to save twice for some reason, haven't looked inot that yet)
+-Added in breaks for the previous loops there.
+
+#I didn't update the Inventory Table yet, but I plan to
+#I also started Bitvectors, put that jazz on the Forums later this week. 
+
+--------------
+2/28/2012 - 11:50pm - Sexy Man
+--------------
+DBs
+-Changed Character_Inventory, You will need to remake your Character (Unless you want to manually add in "ID Integer Primary Key" at the front, and "Upgrade_Three Integer" at the back. 
+-(Need a better Identifier for Character Use than the Item_ID, since you can have multiples of 1 Item, but they might not all be the same - Like my Lightsaber 1 vs Lightsaber 2, both are lightsabers and would have the same ID, but they should be different)
+Defs.py
+-Updated the necessary places for the new Character_Inventory setup
+
+#An Error I noticed, New Players don't get added to the Client List, I didn't have time to fix it.
+#I didn't get into it yet (Not enough time tonight), but the Object class is going to need to be changed a bit to reflect the InvID, This'll need to be planned a bit more, since Mobs wont need this.
+#-The InvID (ID in the Character_Inventory) needs to exist to break up the items, 
+since as I said about, 2 lightsabers can be different, yet will end up sharing the same spots. So the inventory/Object jazz needs to be restructured, I'll handle this soon. 
+
+____________________
+2/29/12 afternoon - Other Guy
+____________________
+Game.py
+-fixed the drop command
+-added in the skill command
+-added in a skill searcher to input handler
+-added in the skill loader in the loginclient
+-added in an attribute point command
+-SkillHandler - only does damage-to-mobs skills
+-put xpchecks in attack command/heart beat
+-minor formatting changes
+
+-MAJOR FIX - if you used a two+ string command the game would crash with only the command input and no target
+--I added in an array length counter to the input/skill handlers
+--you can see variable inside the command if's
+
+
+DBCreation.py
+-added a skills DB
+
+Def.py
+-added in skills(class), SkillLoader(character)
+-cleaned up some of the server printing since we know it works now
+-fixed the character class (experience was in the wrong spot)
+-added in checkExp and LevelUp commands (things are a little buggy)
+
+--------------
+3/01/12 - 10:00pm - Sexy Man
+--------------
+Game.py
+-Started adding in the Effect Types into the World Loader
+--Did Dark and Death, nothing special, but its a start
+-Added a Break into the Skills section
+
+Defs.py
+-Started adding in the effect types into the Location Object
+--Did Dark and Death, nothing special, but its a start
+
+#I've noticed some missing things from the DataBases, At some point I'm going to have to alter them, some can easily be done in SQLliteman, others will probabl need a remake, This is going to happen soon, so keep it in mind for any additions oyu might want.
+
+
+----------------
+3/2/12 - afternoon - Other
+----------------
+
+Game.py
+-fixed some stuff
+-moved some commands to Defs.py to shorten the actual game file
+-Force moves now have a cool down time
+-Force moves now use Force points
+-Force points recover in the HB code (1 point / sec)
+-Health recovers in the HB code (1 point + Con Mult / sec)
+-Skills now gain xp (no leveling system has been implemented)
+-Although it worked for you, I needed to add in an if to stop the for loops for the 2+ word commands
+
+DbCreation.py
+-added in necessary columns for DBCreation (need to rebuild skills)
+
+Defs.py
+-moved addAttribute to here
+-moved self command to here
+-added in some functions to the skillLoad/ save
+-made an Attribute Handler for the Attribs (based on DnD style)
+-fixed Attack and Level up accordingly (Level up only needs a RaceHandler now to be complete)
+
+-------------------
+3/19/12 - 11:00pm - Sexy Man
+-------------------
+
+Defs.py
+-Added in a Mob Position Handler
+
+Game.py
+-Added in sections to reflect Mob Positions
+-Added an append for the client of new charaters
+-Fixed the client displays in the world, Clients themselves wont appear, and other clients will appear correctly now
+-Commented out the say section (So clients wont see every word other clients type)
+-Added in a Arrive def under display world (To show when new clients arive)
+--Started a Leave one, but didn't get to finish it
+
+-------------------
+3/26/12 - 3:00pm - Sexy Man
+-------------------
+
+Telnet.py
+-Added in client.prevlocation for he arrivals/leaving (probably a better way, but this works for now)
+
+Game.py
+-Clients now have Arrivals and Leavings (So it says "Jerkface has arrived" or "Jerkface has left the area"
+-Removed the joins and leaves conversations, and replaced them with "Someone has Returned/Left the Galaxy" (For privacy, since we shouldn't be exposing IP addresses
+-Added in a Say command, can go around saying shit
+-Added in a Comm Command, Can go around Saying private crap to jerks
+-Started a Shout command, (OOC Talking to all people), didn't get to finish it
+
+-------------------
+4/2/12 - 3:00pm - Sexy Man
+-------------------
+
+Game.py
+-Finished Shout
+-Added in messages for others for when you smooch or dance
+-Added a sendlocal function with parameters ClientList, Client, and Message (Sends messages to people who are in the same location, ex: Someone uses look, it says "Jerk looked around" to all who are there
+
+
