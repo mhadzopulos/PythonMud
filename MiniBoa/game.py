@@ -91,59 +91,60 @@ class RepeatTimer(Thread):
      ###########
 
 
-def loadWorld():
-        conn = sqlite3.connect('Worlds.db')
+def loadWorld(): #Loads the world and saves it to a list
+        conn = sqlite3.connect('Worlds.db') #Connect to the World DB
         c = conn.cursor()
-        c.execute("""select ID from world1""")
+        c.execute("""select ID from world1""") 
         conn2 = sqlite3.connect('Worlds.db')
         c2 = conn.cursor()
 
-        for row in c:
+        for row in c: #Retrieve the world information
                 tempLoc = Location(str(row[0]))
                 Test = c2.execute("select Mob_ID from world1_mobs WHERE Location_ID='" + str(row[0]) + "'")
-                for row2 in Test.fetchall():
+                for row2 in Test.fetchall(): #Retrieve the mobs and save them into a List
                         tempMob = Mob(str(row2[0]))
                         tempLoc.MOB_LIST.append(tempMob)
                         print("You added " + tempMob.Name)
                 Test2 = c2.execute("select Object_ID from world1_objects WHERE Location_ID='" + str(row[0]) + "'")
-                for row3 in Test2.fetchall():
+                for row3 in Test2.fetchall(): #Retrieve the objects and save them into a List
                         tempObj = Objects(str(row3[0]))
                         tempLoc.OBJECT_LIST.append(tempObj)
                         print("You added a " + tempObj.Name)
-                WORLD_LIST.append(tempLoc)
+                WORLD_LIST.append(tempLoc) #Append it to the World List
         print("Loaded Locations")
 
 
-def displayWorld(client):
-        if (client.display == 1):
-                if (WORLD_LIST[client.location].Death == 1):
-                        client.send("\nShit you died! The Crappiest Way to die, walking and then go into a Dead Zone\n")
-                elif (WORLD_LIST[client.location].Dark == 1):
+def displayWorld(client): #Displays the world
+        if (client.display == 1)
+        	#Check if the location is special (Death or Dark for now)
+                if (WORLD_LIST[client.location].Death == 1): #Death Location
+                        client.send("\nShoot you died! The Crappiest Way to die, walking and then go into a Dead Zone\n")
+                elif (WORLD_LIST[client.location].Dark == 1): #Location is Dark
                         client.send("\nIts Dark you can't see a thing\n")
                 else: 
                         client.display = 0
-                        def LMobs(client):
+                        def LMobs(client): #Retrieves the mob list for this world location
                                 MobList = WORLD_LIST[client.location].MOB_LIST
-                                for Mob in MobList:
+                                for Mob in MobList: #Displays the mobs for this location
 					Mob.GetPosition()
                                         client.send("^gYou see " + Mob.Name + " is " + Mob.TPosition + " here.\n^~")
-                        def LClients(client):
+                        def LClients(client): #Retrieves other players in this location
                                 ClientList = WORLD_LIST[client.location].CLIENT_LIST
-                                for clients in ClientList:
+                                for clients in ClientList: #Displays the other players for this location
 					if client.character.ID != clients.character.ID:
                                         	client.send("^RYou see " + clients.character.Name + " dancing around. \n^~")
-                        def LObjects(client):
+                        def LObjects(client): #Retrieves the objects for this location
                                 objList = WORLD_LIST[client.location].OBJECT_LIST
-                                for Objects in objList:
+                                for Objects in objList: #Displays the objects for this location
                                         client.send("A " + Objects.Name + " has been left here.\n")
 
-			def Arrivals(client):
+			def Arrivals(client): #Checks for new clients arriving at this location
 				if (client.location != client.prevlocation or (client.location == 0 and client.prevlocation == 0)):
 		                        ClientList = WORLD_LIST[client.location].CLIENT_LIST
 		                        for clients in ClientList:
 						if client.character.ID != clients.character.ID:
 		                                	clients.send("^c" + client.character.Name + " has arrived. \n^~")
-			def Leaving(client):
+			def Leaving(client): #Checks for new clients leaving this location
 				if (client.location != client.prevlocation):
 		                        ClientList = WORLD_LIST[client.prevlocation].CLIENT_LIST
 		                        for clients in ClientList:
@@ -160,6 +161,7 @@ def displayWorld(client):
 			Arrivals(client)
 			Leaving(client)
                         client.send("\n")
+                        #Send the different available dirrections to the user
                         if(WORLD_LIST[client.location].North != "0"):
                                 client.send("n ")
 
@@ -174,15 +176,16 @@ def displayWorld(client):
                         client.send("\n")
                         displayHealth(client)
 			client.prevlocation = client.location
-def displayHealth(client):
+			
+def displayHealth(client): #Displays the users stats (Health, Force Power, and Movement)
         
         client.send("HP - " + str(client.character.Health) + "/" + str(client.character.Max_Health)
                     + ", FP - " + client.character.Force + "/" + client.character.Max_Force
                     + ", movement - " + client.character.Move_Points + "\n\n\n")
 
-def login(client):
+def login(client): #Used for the players login. 
         """
-        check whether the client wants to login, disconnect, or fuck themselves
+        check whether the client wants to login, disconnect, etc
         """
         global SERVER_RUN
         msg = client.get_command()
@@ -191,7 +194,7 @@ def login(client):
         name = msg
         password = msg
 
-        if(client.loggedin == 3):
+        if(client.loggedin == 3): #Login into account and start character creation
                 client.password = password
                 c.execute("""insert into Master_User values (Null, '""" + client.name + """','""" + client.password + """','0')""")
                 conn.commit()
@@ -199,7 +202,7 @@ def login(client):
                 client.charcreate = 1
                 #client.loggedin = 7
 
-        if (client.loggedin == 2):
+        if (client.loggedin == 2): #Set Password
                 if(msg == "y"):
                         client.loggedin = 3
                         client.send("What do you want your password to be?\n")
@@ -209,14 +212,14 @@ def login(client):
                         client.loggedin = 0
                         client.send("What's your name then?!\n")
 
-        if(client.loggedin == 1):
+        if(client.loggedin == 1): #Check inputed password
                 Stuff = c.execute("""Select Password from master_user where Player_Name='""" + client.name + """'""")
                 corrpass = False
                 client.send("checking password... \n")
                 row = Stuff.fetchone()
                 client.send(str(row[0]) + "\n")
 
-                if (password == str(row[0])):
+                if (password == str(row[0])): #Password was correct
                         client.password = password
                         client.send("Welcome back! \n")
                         client.character = Character(client.name)
@@ -225,11 +228,11 @@ def login(client):
                         WORLD_LIST[0].CLIENT_LIST.append(client)
                         displayWorld(client)
                         client.loggedin = 7
-                else:
+                else: #Password failed
                         client.send("Wrong password! \n")
                         client.send("Password: ")
 
-        if(client.loggedin == 0):
+        if(client.loggedin == 0): #Check the login information for the player, if the name exists add new user, else login
 
                 Stuff = c.execute("""Select Player_Name from master_user where Player_Name='""" + name + """'""")
                 found = False
@@ -257,13 +260,14 @@ def login(client):
 
 
 
-def CharacterCreation(client):
+def CharacterCreation(client): #Create their new character
         global SERVER_RUN
         msg = client.get_command()
         NewChar = CreateChar()
         print (msg)
 
-        if (client.charcreate == 11):
+	#Character creation, Takes input from previous charcreate and inputs it while asking the next question
+        if (client.charcreate == 11): #Create the new character they've made
 
                 Desc = msg
                 client.NewChar.Description = Desc
@@ -275,17 +279,17 @@ def CharacterCreation(client):
                 client.character = Character(client.name)
 		WORLD_LIST[0].CLIENT_LIST.append(client)
 
-        if (client.charcreate == 10):
+        if (client.charcreate == 10): #input Character Hair Color
 
                 client.NewChar.Hair_Color = 'Blue'
                 client.charcreate = 11
                 client.send("Enter your character Description: \n")
-        if (client.charcreate == 9):
+        if (client.charcreate == 9): #input Character skin color
 
                 client.NewChar.Skin_Color = "Green"
                 client.charcreate = 10
                 client.send("Select the number for your hair color: \n1)Blue \n")
-        if (client.charcreate == 8):
+        if (client.charcreate == 8): #Input character weight
                 Weight = msg
                 try:
                         int(Weight)
@@ -298,7 +302,7 @@ def CharacterCreation(client):
 
                 except ValueError:
                        client.send("Invalid input, Try Again \n")
-        if (client.charcreate == 7):
+        if (client.charcreate == 7): #Input character height
                 Height = msg
                 try:
                         int(Height)
@@ -311,7 +315,7 @@ def CharacterCreation(client):
 
                 except ValueError:
                        client.send("Invalid input, Try Again \n")
-        if (client.charcreate == 6):
+        if (client.charcreate == 6): #Input character age
                 Age = msg
                 try:
                         int(Age)
@@ -324,7 +328,7 @@ def CharacterCreation(client):
 
                 except ValueError:
                        client.send("Invalid input, Try Again \n")
-        if (client.charcreate == 5.5):
+        if (client.charcreate == 5.5): #Input characters skills
                 SkillID = msg
 
                 try:
@@ -358,7 +362,7 @@ def CharacterCreation(client):
                                 client.send("Invalid input, Try Again \n")
                 except ValueError:
                        client.send("Invalid input, Try Again \n")
-        if (client.charcreate == 5):
+        if (client.charcreate == 5): #Input characters gender
                 GenderID = msg
                 if GenderID == "1":
                         Gender = "Male"
@@ -377,7 +381,7 @@ def CharacterCreation(client):
                 except ValueError:
                        client.send("Invalid input, Try Again \n")
 
-        if (client.charcreate == 4):
+        if (client.charcreate == 4): #Input characters force ability
                 ClassID = msg
 
                 if ClassID == "1":
@@ -397,7 +401,7 @@ def CharacterCreation(client):
                 except ValueError:
                        client.send("Invalid Class ID, Try Again \n")
         #Addin JAzz for Stats (Strength, Dex, Etc)
-        if (client.charcreate == 3):
+        if (client.charcreate == 3): #Input characters race
                 RaceID = msg
 
                 if RaceID == "1":
@@ -422,13 +426,13 @@ def CharacterCreation(client):
                 except ValueError:
                        client.send("Invalid Race ID, Try Again \n")
 
-        if (client.charcreate == 2):
+        if (client.charcreate == 2): #Input characters last name
                 client.NewChar.Name = client.name
                 client.NewChar.LName = msg
                 client.charcreate = 3
                 client.send("Select the number for your race: \n1)Human \n2)TwiLek \n3)Rodian \n4)Zabrak \n5)Cathar \n")
 
-        if (client.charcreate == 1):
+        if (client.charcreate == 1): #Input characters name
                 client.NewChar = CreateChar()
                 client.send("Enter your characters Last Name: \n")
 
@@ -647,14 +651,14 @@ def inputHandler(inp, client):  ##This is where you put all your keywords + code
          ##############################
 
                 
-    if(msg[0] == "inventory" or msg[0] == "inv"):
+    if(msg[0] == "inventory" or msg[0] == "inv"): #Check Inventory Command
         client.send("You have in your pack: \n\n")
 
         for row in client.character.Inventory:
                 item = row
                 client.send(item.Name + "\n")
 
-    if(msg[0] == "take" and sizeof > 1):
+    if(msg[0] == "take" and sizeof > 1): #Take Command
         found = False
         tempLoc = WORLD_LIST[client.location]
         for row in tempLoc.OBJECT_LIST:
@@ -670,7 +674,7 @@ def inputHandler(inp, client):  ##This is where you put all your keywords + code
                 if found == True:
                         break
 
-    if(msg[0] == "use" and sizeof > 1):
+    if(msg[0] == "use" and sizeof > 1): #Use command
 
         found = False
         for row in client.character.Inventory:
@@ -695,7 +699,7 @@ def inputHandler(inp, client):  ##This is where you put all your keywords + code
                 if found == True:
                         break
 
-    if(msg[0] == "equip" and sizeof > 1):
+    if(msg[0] == "equip" and sizeof > 1): #Equip Command
             found = False
             
             for row in client.character.Inventory:
@@ -723,7 +727,7 @@ def inputHandler(inp, client):  ##This is where you put all your keywords + code
                     if found == True:
                             break
                                                 
-    if(msg[0] == "remove" and sizeof > 1):
+    if(msg[0] == "remove" and sizeof > 1): #Remove Command
 
             found = False
             for row in client.character.Inventory:
@@ -747,7 +751,7 @@ def inputHandler(inp, client):  ##This is where you put all your keywords + code
                              break
 
                         
-    if(msg[0] == "drop" and sizeof > 1):
+    if(msg[0] == "drop" and sizeof > 1): #Drop Command
 
             
             found = False
@@ -786,7 +790,7 @@ def inputHandler(inp, client):  ##This is where you put all your keywords + code
 ################################
 
                                                     
-    if((msg[0] == "att" or msg[0] == "hit") and sizeof > 1):
+    if((msg[0] == "att" or msg[0] == "hit") and sizeof > 1): #Attack or Hit command
 
         found = False
         MobList = WORLD_LIST[client.location].MOB_LIST
@@ -820,10 +824,10 @@ def inputHandler(inp, client):  ##This is where you put all your keywords + code
 ################################
 
                                         
-    if(msg[0] == "self"):
+    if(msg[0] == "self"): #Self Command
             SelfPrint(client)
                     
-    if(msg[0] == "skill"):
+    if(msg[0] == "skill"): #Skill Command
             c = client.character
             client.send("Your skills: \n")
             for skill in c.Skills:
@@ -831,19 +835,19 @@ def inputHandler(inp, client):  ##This is where you put all your keywords + code
                                 "FP\n")
             client.send("\n")        
 
-    if(msg[0] == "save"):
+    if(msg[0] == "save"): #Save Command
         client.character.Save()
 
 ######## ------ ACTION FUNCTIONS ------ ############
 
-    if(msg[0] == "look"):
+    if(msg[0] == "look"): #Look Command
         client.display = 1
 	sendlocal(WORLD_LIST[client.location].CLIENT_LIST,client,client.character.Name + " looks around.\n")
         
-    if(msg[0] == "add" and sizeof > 1 and int(client.character.Skill_Points) > 0):
+    if(msg[0] == "add" and sizeof > 1 and int(client.character.Skill_Points) > 0): #Add Command
         addAttrib(client, msg)
 
-    if(msg[0] == "say"):
+    if(msg[0] == "say"): #Say Command
 	ClientList = WORLD_LIST[client.location].CLIENT_LIST
 	for clients in ClientList:
 		if client.character.ID != clients.character.ID:
@@ -856,15 +860,16 @@ def inputHandler(inp, client):  ##This is where you put all your keywords + code
 		if Target == clients.character.Name.lower():
 			clients.send("^M" + client.character.Name + " comm'd you, " + Comming[2] + "\n^~")
 
-    if(msg[0] == "shout"): #For all to see
+    if(msg[0] == "shout"): #Shout Command, For all to see
 	broadcast("^M[OOC]:" + client.character.Name + " shouts, " + Saying[1] + "\n^~") 
 	
     
         
 
-######## ------ STUPID COMMANDS ----- ##############
+######## ------ STUPID COMMANDS ----- ############## 
+#Commands that were added in for fun
 
-    if(msg[0] == "dance" and sizeof > 1):
+    if(msg[0] == "dance" and sizeof > 1): #Dance Command
                 ###I'll clean this up later, I put in some extra ifs to prevent it looping when it doesn't need to.
                 #Like the check if self and before the client loop. 
                 if (msg[1] == "self" or msg[1] == client.character.Name.lower()):
@@ -895,7 +900,7 @@ def inputHandler(inp, client):  ##This is where you put all your keywords + code
                         else:
                                 client.send("You can't dance with someone who doesn't exist\n")
 
-    if(msg[0] == "smooch" and sizeof > 1):
+    if(msg[0] == "smooch" and sizeof > 1): #Smooch Command
                 ###I'll clean this up later, I put in some extra ifs to prevent it looping when it doesn't need to.
                 #Like the check if self and before the client loop. 
                 if (msg[1] == "self" or msg[1] == client.character.Name.lower()):
