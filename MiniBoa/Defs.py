@@ -1,7 +1,8 @@
+#Class Definition File
 import sqlite3
 import random
 
-
+#Class for Creating a Character
 class CreateChar(object):
         def __init__(self):
                 self.ID = 0
@@ -42,7 +43,7 @@ class CreateChar(object):
                 self.Description = ''
                 
         
-        def CreateCharDB(self):
+        def CreateCharDB(self): #Creates all the database tables
                 ##DONT YOU NEED TO CREATE THE DATABASE!
                 #NOPE its right there in the Connect
                 conn = sqlite3.connect(self.Name + '.db')
@@ -57,7 +58,7 @@ class CreateChar(object):
                 #Add Companion Tables in At some point and dansu
                 conn.commit()
 
-        def InsertInfo(self):
+        def InsertInfo(self): #Inserts into the database tables
                 conn = sqlite3.connect(self.Name + '.db')
                 c = conn.cursor()
                 c.execute("""insert into Character_Stats values ('""" + str(self.ID) + """', '""" + str(self.Name) + """','""" + str(self.LName) + """','""" + str(self.Master_ID) + """','""" + str(self.Location) + """','""" + str(self.Health) + """','""" + str(self.Max_Health) + """','""" + str(self.Force) + """','""" + str(self.Max_Force) + """','""" + str(self.Stamina) + """','""" + str(self.Max_Stamina) + """','""" + str(self.Race) + """','""" + str(self.Class) + """','""" + str(self.Level) + """','""" + str(self.Experience) + """','""" + str(self.Skill_Points) + """','""" + str(self.Move_Points) + """','""" + str(self.Alignment) + """','""" + str(self.Strength) + """','""" + str(self.Dexterity) + """','""" + str(self.Constitution) + """','""" + str(self.Intelligence) + """','""" + str(self.Wisdom) + """','""" + str(self.Charisma) + """','""" + str(self.Armor) + """','""" + str(self.WeaponOne) + """','""" + str(self.WeaponTwo) + """', '0')""")
@@ -65,6 +66,7 @@ class CreateChar(object):
                 #INsert Starter Items into Inventory and what not
                 conn.commit()
 
+#Location Class - Handles all the world locations
 class Location(object):
         def __init__(self, LocID):
                 #Add in Check for World Table Here Later
@@ -106,7 +108,7 @@ class Location(object):
                                 self.Death = 1
                                 
                                 
-
+#Character Class - Whats used for the client
 class Character(object):
         def __init__(self, Name):
                 conn = sqlite3.connect(Name + '.db')
@@ -158,7 +160,7 @@ class Character(object):
                         
                 c.close()
 
-        def Save(self):
+        def Save(self): #Saves the current player information to the database
                 conn = sqlite3.connect(self.Name + '.db')
                 c = conn.cursor()
                 c.execute("""UPDATE Character_Stats SET Master_ID='""" + str(self.Master_ID) + """',Location='""" + str(self.Location) + """',Health='""" + str(self.Health) + """',Max_Health='""" + str(self.Max_Health) + """',Force='""" + str(self.Force) + """',Max_Force='""" + str(self.Max_Force) + """',Stamina='""" + str(self.Stamina) + """',Max_Stamina='""" + str(self.Max_Stamina) + """',Level='""" + str(self.Level) + """',Experience='""" + str(self.Experience) + """',Skill_Points='""" + str(self.Skill_Points) + """',Move_Points='""" + str(self.Move_Points) + """',Alignment='""" + str(self.Alignment) + """',Strength='""" + str(self.Strength) + """',Dexterity='""" + str(self.Dexterity) + """',Constitution='""" + str(self.Constitution) + """',Intelligence='""" + str(self.Intelligence) + """',Wisdom='""" + str(self.Wisdom) + """',Charisma='""" + str(self.Charisma) + """',Armor_ID='""" + str(self.Armor) + """',WeaponOne_ID='""" + str(self.WeaponOne) + """',WeaponTwo_ID='""" + str(self.WeaponTwo) + """'""")
@@ -173,14 +175,14 @@ class Character(object):
                 c.close()
                 print(self.Name + " was saved!")
 
-        def InventoryLoad(self):
+        def InventoryLoad(self): #Loads the players inventory 
                 conn = sqlite3.connect(self.Name + '.db')
                 c = conn.cursor()
                 c.execute("""SELECT Item_ID FROM Character_Inventory""")
                 for row in c:
                         tempItem = Objects(str(row[0]))
                         self.Inventory.append(tempItem)
-        def SkillLoad(self):
+        def SkillLoad(self): #Loads the players skills
                 conn = sqlite3.connect(self.Name + '.db')
                 c = conn.cursor()
                 c.execute("""Select * FROM Character_skill""")
@@ -191,8 +193,9 @@ class Character(object):
                         skill.Exp = str(row[2])
                         
         
-        #def Moves(self):
+        #def Moves(self): #Still being worked on
 
+#Mob Class
 class Mob(object):
         def __init__(self, MobID):
                 conn = sqlite3.connect('Mobs.db')
@@ -238,7 +241,7 @@ class Mob(object):
                         self.HostileTarget = ""
 			self.TPosition = ""
 
-	def GetPosition(self):
+	def GetPosition(self): #Gets the mobs position (Whether they're sleeping, standing, etc)
 			if (self.Position == "0"):
 				self.TPosition = "dead"
 			elif (self.Position == "1"):
@@ -258,8 +261,8 @@ class Mob(object):
 			elif (self.Position == "8"):
 				self.TPosition = "standing"
 			else:
-				self.TPosition = "shits not right"
-                        
+				self.TPosition = "This shouldn't happen"
+#Skills class
 class Skill(object):
         def __init__(self, SkillID):
                 conn = sqlite3.connect('Skills.db')
@@ -279,7 +282,7 @@ class Skill(object):
                         self.Level = ""
                 
 
-                        
+#Objects/Items Class                     
 class Objects(object):
         def __init__(self, ObjectID): #InvID
                 conn = sqlite3.connect('Obj.db')
@@ -302,6 +305,7 @@ class Objects(object):
                         self.Area_Effect = str(row[11])
                         self.Faction = str(row[12])
                         self.Max_Entires = str(row[13])
+#Returns a life state based upon HP
 def State(client, P):
         ratio = float(P.Health) / float(P.MaxHP)
         if(ratio == 1):
@@ -314,7 +318,7 @@ def State(client, P):
                 client.send(P.Name + " has some serious wounds\n\n")
         if(ratio < .25 and ratio > 0):
                 client.send(P.Name + " is near-death!\n\n")
-                
+#Used for attacking           
 def Attack(client, A, D):  ##Don't forget to put (client.character) for the game.py code
         attackDice = random.randint(1,20)
         DDefend = (int(D.AC) + int(D.Dexterity))
@@ -331,6 +335,7 @@ def Attack(client, A, D):  ##Don't forget to put (client.character) for the game
                         D.Health = int(D.Health) - damage
         else:
                 client.send(A.Name + " missed! \n\n")
+
 def equip(A, I):
         if(I.Type == "1"):
                 A.WeaponOne = I.ID
@@ -394,7 +399,8 @@ def AttribHandler(attr):
                 multiplier = 10
                 
         return multiplier
-
+        
+#Add attribute to character
 def addAttrib(client, msg):
         
         c = client.character
@@ -440,7 +446,7 @@ def addAttrib(client, msg):
                 client.send("Your charisma increases!\n")
 
 
-                
+#prints information about the client              
 def SelfPrint(client):
     c = client.character
     client.send(c.Name + " " + c.LName + "\nLevel: "+ str(c.Level) + "\nRace: ")
