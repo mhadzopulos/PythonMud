@@ -1,11 +1,12 @@
+#Creates the databases for the game
 import sqlite3
 
 
 while 1:
         print ("Enter your command \n1) Create Game.db \n2) Make World DB and Insert 5 BS entries \n3) Make Mob DB with BS Entries \n4) Make Skills DB with Force Push")
-        Batman = raw_input("")
+        UserInput = raw_input("")
 
-        if (Batman == "1"):
+        if (UserInput == "1"): #Creates the game database, which contains the user data
                 conn = sqlite3.connect('Game.db')
                 c = conn.cursor()
                 try:            
@@ -15,7 +16,7 @@ while 1:
                         print ("Game.db has successfully been created.")
                 except:
                         print ("The Game.db already exists, you must delete it first.") 
-        elif (Batman == "2"):
+        elif (UserInput == "2"): #Creates the worlds database, contains all the world, world_mob, and world_object data
                 conn = sqlite3.connect('Worlds.db')
                 c = conn.cursor()
         
@@ -38,7 +39,7 @@ while 1:
                 except:
                         print ("Worlds.db already exists, delete it first")
 
-        elif (Batman == "3"):
+        elif (UserInput == "3"): #Creates the mobs database, contains all the mob data
                 conn = sqlite3.connect('Mobs.db')
                 c = conn.cursor()
 
@@ -53,7 +54,7 @@ while 1:
                         print ("Mobs.db already exists, delete it first")
 
                         
-        elif (Batman == "4"):
+        elif (UserInput == "4"): #Creates the skills database, contains all the skill data
                 conn = sqlite3.connect('Skills.db')
                 c = conn.cursor()
 
